@@ -12,15 +12,16 @@ struct PhysicsObject {
 
     PhysicsObject() = default;
 
-    PhysicsObject(Vec2 pos) : position{pos}, last_position{pos} {}
+    PhysicsObject(const Vec2& pos) : position{pos}, last_position{pos} {}
 
-    void setPosition(Vec2 pos) {
+    void setPosition(const Vec2& pos) {
         position = pos;
         last_position = pos;
     }
 
     void update(float dt) {
-        const Vec2 new_position = 2.0f * position - last_position + acceleration * (dt * dt);
+        const Vec2 v(2.0f * position - last_position);
+        const Vec2 new_position = v + acceleration * (dt * dt);
         last_position = position;
         position = new_position;
         acceleration = {0.0f, 0.0f};

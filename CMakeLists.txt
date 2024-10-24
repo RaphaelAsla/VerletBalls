@@ -8,6 +8,7 @@ set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_CXX_FLAGS_RELEASE "-Wall -Werror -O3")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+#set(CMAKE_BUILD_TYPE Debug)
 
 find_package(SFML 2.5 COMPONENTS graphics window system)
 
@@ -22,7 +23,7 @@ set(SOURCES ${source_files})
 
 add_executable(VerletBalls ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE "src")
-set(SFML_LIBS sfml-system sfml-window sfml-graphics)
+set(SFML_LIBS sfml-system sfml-window sfml-graphics sfml-audio)
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBS})
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

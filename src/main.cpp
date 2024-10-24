@@ -15,10 +15,11 @@ int main() {
     PhysicsSolver solver{world_size};
     Renderer renderer{solver};
 
-    float zoom_level = 6.5f;
     sf::View view(window.getDefaultView());
-    view.setCenter({75, 75});
-    view.setSize(window.getSize().x / zoom_level, window.getSize().y / zoom_level);
+    const float margin = 20.0f;
+    const auto zoom = static_cast<float>(window_height - margin) / static_cast<float>(world_size.y);
+    view.setSize(window.getSize().x / zoom, window.getSize().y / zoom);
+    view.setCenter({world_size.x * 0.5f, world_size.y * 0.5f});
     window.setView(view);
 
     sf::Clock clock;
@@ -32,10 +33,10 @@ int main() {
     while (window.isOpen()) {
         elapsed = clock.restart();
 
-        if (solver.objects.size() < 15000) {
-            for (int i = 10; i--;) {
-                const auto id = solver.createObject({2.0f, 1.0f + 1.1f * i});
-                solver.objects[id].last_position.x -= 0.14f;
+        if (solver.objects.size() < 26000) {
+            for (int i = 20; i--;) {
+                const auto id = solver.createObject({2.0f, 10.0f + 1.1f * i});
+                solver.objects[id].last_position.x -= 0.2f;
                 solver.objects[id].color = sf::Color::White;
             }
         }
@@ -48,17 +49,31 @@ int main() {
         auto render_start = steady_clock::now();
         renderer.render(window);
 
-        // Show nodes
+        /* show threads */
+        // const auto& rects = solver.generateQuadCells(8, 150, 150);
+        // int i = 0;
+        // for (const auto& r : rects) {
+        //     sf::RectangleShape rect(sf::Vector2f(r.half_size.x * 2, r.half_size.y * 2));
+        //     rect.setOrigin(rect.getSize() / 2.f);
+        //     rect.setPosition(r.position.x, r.position.y);
+        //     sf::Color fill = (i % 2) ? sf::Color::Blue : sf::Color::Red;
+        //     fill.a = 90;
+        //     rect.setFillColor(fill);
+        //     window.draw(rect);
+        //     i++;
+        // }
+
+        /* Show nodes */
         // for (auto& child : solver.qtree.nodes) {
-        //    if (child.count <= 0) {
+        //    if (child.count < 0) {
         //        continue;
         //    }
         //    sf::RectangleShape rect(sf::Vector2f(child.area.half_size.x * 2, child.area.half_size.y * 2));
         //    rect.setOrigin(rect.getSize() / 2.f);
         //    rect.setPosition(child.area.position.x, child.area.position.y);
         //    rect.setFillColor(sf::Color::Transparent);
-        //    rect.setOutlineThickness(0.2);
-        //    rect.setOutlineColor(sf::Color::Green);
+        //    rect.setOutlineThickness(0.1);
+        //    rect.setOutlineColor(sf::Color::White);
         //    window.draw(rect);
         //}
 
@@ -71,6 +86,7 @@ int main() {
             std::cout << "Frames per second: " << static_cast<int>(1.0f / elapsed.asSeconds()) << "\n";
             std::cout << "Physics took: " << duration_cast<milliseconds>(solver_done) << "\n";
             std::cout << "Rendering took: " << duration_cast<milliseconds>(render_done) << "\n";
+            std::cout << solver.objects.size() << std::endl;
             std::cout << "-------------------\n";
             last_second = steady_clock::now();
         }
