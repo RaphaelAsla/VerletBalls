@@ -17,5 +17,3 @@ CXX=clang++ cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
 ninja
 ./VerletBalls
 ```
-
-## This project is under development
