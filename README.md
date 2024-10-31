@@ -5,6 +5,8 @@
   <img src="images/image_2.png" width="150" />
 </p>
 
+> **Note:** Although a grid would have been more efficient for this project, a quadtree was implemented to gain a deeper understanding of its structure and behavior.
+
 ## Compilation
 
 To compile you need SFML and CMake installed on your system.
