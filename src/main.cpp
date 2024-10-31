@@ -49,20 +49,6 @@ int main() {
         auto render_start = steady_clock::now();
         renderer.render(window);
 
-        /* show threads */
-        // const auto& rects = solver.generateQuadCells(8, 150, 150);
-        // int i = 0;
-        // for (const auto& r : rects) {
-        //     sf::RectangleShape rect(sf::Vector2f(r.half_size.x * 2, r.half_size.y * 2));
-        //     rect.setOrigin(rect.getSize() / 2.f);
-        //     rect.setPosition(r.position.x, r.position.y);
-        //     sf::Color fill = (i % 2) ? sf::Color::Blue : sf::Color::Red;
-        //     fill.a = 90;
-        //     rect.setFillColor(fill);
-        //     window.draw(rect);
-        //     i++;
-        // }
-
         /* Show nodes */
         // for (auto& child : solver.qtree.nodes) {
         //    if (child.count < 0) {

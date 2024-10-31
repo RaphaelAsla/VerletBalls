@@ -1,7 +1,5 @@
 #pragma once
-#include <chrono>
 #include <cmath>
-#include <format>
 #include <future>
 #include <vector>
 
@@ -68,10 +66,6 @@ struct PhysicsSolver {
         return cells;
     }
 
-    std::vector<QuadCell> thread_cells = generateQuadCells(8, 150, 150);
-
-    std::vector<std::future<void>> cell_futures = std::vector<std::future<void>>(thread_cells.size());
-
     void solveCollisions() {
         const auto solve_objects = [&](const std::vector<int>& indicies) {
             for (const int i : indicies) {
@@ -84,6 +78,8 @@ struct PhysicsSolver {
             }
         };
 
+        std::vector<QuadCell> thread_cells = generateQuadCells(8, 150, 150);
+        std::vector<std::future<void>> cell_futures = std::vector<std::future<void>>(thread_cells.size());
         std::vector<std::vector<int>> vec_of_vecint;
 
         for (const auto& cell : thread_cells) {
@@ -105,53 +101,25 @@ struct PhysicsSolver {
         for (int i = 1; i < cell_futures.size(); i += 2) {
             cell_futures[i].wait();
         }
-
-        // for (const auto& obj : qtree.objects) {
-        //     const QuadObject& elm = obj;
-        //     const std::vector<int>& found_ids = qtree.query(objects[elm.id]);
-        //     for (const auto& found_id : found_ids) {
-        //         if (found_id != elm.id) {
-        //             solveContact(found_id, elm.id);
-        //         }
-        //     }
-        // }
     }
 
     void updateObjects(float dt) {
-        const auto update_objects = [&](size_t start, size_t end) {
-            for (size_t i = start; i < end; i++) {
-                PhysicsObject& obj = objects[i];
-                obj.acceleration += gravity;
-                obj.update(dt);
-                const float margin = 1.0f;
-                if (obj.position.x > world_size.x - margin) {
-                    obj.position.x = world_size.x - margin;
-                } else if (obj.position.x < margin) {
-                    obj.position.x = margin;
-                }
-                if (obj.position.y > world_size.y - margin) {
-                    obj.position.y = world_size.y - margin;
-                } else if (obj.position.y < margin) {
-                    obj.position.y = margin;
-                }
+        for (size_t i = 0; i < objects.size(); i++) {
+            PhysicsObject& obj = objects[i];
+            obj.acceleration += gravity;
+            obj.update(dt);
+            const float margin = 1.0f;
+            if (obj.position.x > world_size.x - margin) {
+                obj.position.x = world_size.x - margin;
+            } else if (obj.position.x < margin) {
+                obj.position.x = margin;
             }
-        };
-
-        // int batch_size = objects.size() / futures.size();
-        // for (size_t i = 0; i < futures.size(); i++) {
-        //     const size_t start = i * batch_size;
-        //     const size_t end = start + batch_size;
-        //     futures[i] = std::async(std::launch::async, update_objects, start, end);
-        // }
-
-        // for (const auto& future : futures) {
-        //     future.wait();
-        // }
-
-        // if (batch_size * futures.size() < objects.size()) {
-        //     const size_t start = batch_size * futures.size();
-        update_objects(0, objects.size());
-        //}
+            if (obj.position.y > world_size.y - margin) {
+                obj.position.y = world_size.y - margin;
+            } else if (obj.position.y < margin) {
+                obj.position.y = margin;
+            }
+        }
     }
 
     void update(float dt) {
@@ -160,11 +128,6 @@ struct PhysicsSolver {
             addObjectsToTree();
             solveCollisions();
             updateObjects(sub_dt);
-            // for (auto& obj : qtree.objects) {
-            //     obj.element.position = objects[obj.element.id].position;
-            // }
-            // qtree.updateLeafs();
         }
-        // qtree.cleanup();
     }
 };

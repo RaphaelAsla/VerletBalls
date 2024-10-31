@@ -1,5 +1,4 @@
 # VerletBalls
-
 <p align="middle">
   <img src="images/image_0.png" width="150" />
   <img src="images/image_1.png" width="150" /> 
